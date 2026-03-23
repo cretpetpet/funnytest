@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Kinetic Play | Catch the Button</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries">
+        const button = document.getElementById('runaway-button');
+        const label = document.getElementById('button-label');
+        const icon = document.getElementById('button-icon');
+        const counter = document.getElementById('distance-counter');
+        const progressBar = document.getElementById('progress-bar');
+        const successModal = document.getElementById('success-modal');
+        const modalContent = document.getElementById('modal-content');
+        
+        let totalDistance = 0;
+        const targetDistance = 5000;
+        let isExhausted = false;
+        let lastX = 0;
+        let lastY = 0;
+
+        function updateProgress() {
+            const percentage = Math.min((totalDistance / targetDistance) * 100, 100);
+            progressBar.style.width = percentage + '%';
+            counter.innerText = `${Math.floor(totalDistance)}px / ${targetDistance}px`;
+
+            if (totalDistance >= targetDistance && !isExhausted) {
+                becomeExhausted();
+            }
+        }
+
+        function createWhoosh(x, y, targetX, targetY) {
+            const trail = document.createElement('div');
+            trail.className = 'whoosh-trail';
+            
+            const dist = Math.sqrt(Math.pow(targetX - x, 2) + Math.pow(targetY - y, 2));
+            const angle = Math.atan2(targetY - y, targetX - x) * 180 / Math.PI;
+
+            trail.style.width = dist + 'px';
+            trail.style.height = '40px';
+            trail.style.left = x + 'px';
+            trail.style.top = y + 'px';
+            trail.style.transformOrigin = '0 50%';
+            trail.style.transform = `rotate(${angle}deg)`;
+            
+            document.body.appendChild(trail);
+            
+            setTimeout(() => {
+                trail.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+                trail.style.opacity = '0';
+                trail.style.transform = `rotate(${angle}deg) scaleY(0)`;
+                setTimeout(() => trail.remove(), 400);
+            }, 50);
+        }
+
+        button.addEventListener('mouseover', (e) => {
+            if (isExhausted) return;
+
+            const rect = button.getBoundingClientRect();
+            const currentX = rect.left + rect.width / 2;
+            const currentY = rect.top + rect.height / 2;
+
+            const padding = 100;
+            const newX = Math.random() * (window.innerWidth - rect.width - padding) + padding/2;
+            const newY = Math.random() * (window.innerHeight - rect.height - padding) + padding/2;
+
+            const moveDist = Math.sqrt(Math.pow(newX - currentX, 2) + Math.pow(newY - currentY, 2));
+            totalDistance += moveDist;
+
+            button.style.transform = `translate(${newX - currentX}px, ${newY - currentY}px)`;
+            
+            createWhoosh(currentX, currentY, newX, newY);
+            updateProgress();
+        });
+
+        function becomeExhausted() {
+            isExhausted = true;
+            button.style.transform = `translate(0px, 0px)`; 
+            button.classList.remove('kinetic-gradient');
+            button.classList.add('exhausted-state', 'text-on-primary');
+            
+            label.innerText = "Okay, I'm tired...";
+            icon.innerText = "airware"; // Better icon for panting/air
+            
+            button.addEventListener('click', () => {
+                successModal.classList.remove('pointer-events-none', 'opacity-0');
+                modalContent.classList.remove('scale-90');
+                modalContent.classList.add('scale-100');
+            });
+        }
+
+        const initialRect = button.getBoundingClientRect();
+        lastX = initialRect.left;
+        lastY = initialRect.top;
+    </script>
+<link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@300;400;500;700;800;900&amp;family=Be+Vietnam+Pro:wght@300;400;500;600;700&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        const button = document.getElementById('runaway-button');
+        const label = document.getElementById('button-label');
+        const icon = document.getElementById('button-icon');
+        const counter = document.getElementById('distance-counter');
+        const progressBar = document.getElementById('progress-bar');
+        const successModal = document.getElementById('success-modal');
+        const modalContent = document.getElementById('modal-content');
+        
+        let totalDistance = 0;
+        const targetDistance = 5000;
+        let isExhausted = false;
+        let lastX = 0;
+        let lastY = 0;
+
+        function updateProgress() {
+            const percentage = Math.min((totalDistance / targetDistance) * 100, 100);
+            progressBar.style.width = percentage + '%';
+            counter.innerText = `${Math.floor(totalDistance)}px / ${targetDistance}px`;
+
+            if (totalDistance >= targetDistance && !isExhausted) {
+                becomeExhausted();
+            }
+        }
+
+        function createWhoosh(x, y, targetX, targetY) {
+            const trail = document.createElement('div');
+            trail.className = 'whoosh-trail';
+            
+            const dist = Math.sqrt(Math.pow(targetX - x, 2) + Math.pow(targetY - y, 2));
+            const angle = Math.atan2(targetY - y, targetX - x) * 180 / Math.PI;
+
+            trail.style.width = dist + 'px';
+            trail.style.height = '40px';
+            trail.style.left = x + 'px';
+            trail.style.top = y + 'px';
+            trail.style.transformOrigin = '0 50%';
+            trail.style.transform = `rotate(${angle}deg)`;
+            
+            document.body.appendChild(trail);
+            
+            setTimeout(() => {
+                trail.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+                trail.style.opacity = '0';
+                trail.style.transform = `rotate(${angle}deg) scaleY(0)`;
+                setTimeout(() => trail.remove(), 400);
+            }, 50);
+        }
+
+        button.addEventListener('mouseover', (e) => {
+            if (isExhausted) return;
+
+            const rect = button.getBoundingClientRect();
+            const currentX = rect.left + rect.width / 2;
+            const currentY = rect.top + rect.height / 2;
+
+            const padding = 100;
+            const newX = Math.random() * (window.innerWidth - rect.width - padding) + padding/2;
+            const newY = Math.random() * (window.innerHeight - rect.height - padding) + padding/2;
+
+            const moveDist = Math.sqrt(Math.pow(newX - currentX, 2) + Math.pow(newY - currentY, 2));
+            totalDistance += moveDist;
+
+            button.style.transform = `translate(${newX - currentX}px, ${newY - currentY}px)`;
+            
+            createWhoosh(currentX, currentY, newX, newY);
+            updateProgress();
+        });
+
+        function becomeExhausted() {
+            isExhausted = true;
+            button.style.transform = `translate(0px, 0px)`; 
+            button.classList.remove('kinetic-gradient');
+            button.classList.add('exhausted-state', 'text-on-primary');
+            
+            label.innerText = "Okay, I'm tired...";
+            icon.innerText = "airware"; // Better icon for panting/air
+            
+            button.addEventListener('click', () => {
+                successModal.classList.remove('pointer-events-none', 'opacity-0');
+                modalContent.classList.remove('scale-90');
+                modalContent.classList.add('scale-100');
+            });
+        }
+
+        const initialRect = button.getBoundingClientRect();
+        lastX = initialRect.left;
+        lastY = initialRect.top;
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .kinetic-gradient {
+            background: linear-gradient(135deg, #0846ed 0%, #859aff 100%);
+        }
+        .glass-overlay {
+            background: rgba(249, 245, 255, 0.6);
+            backdrop-filter: blur(20px);
+        }
+        #runaway-button {
+            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.5s ease;
+        }
+        .whoosh-trail {
+            position: absolute;
+            pointer-events: none;
+            background: rgba(133, 154, 255, 0.3);
+            border-radius: 9999px;
+            z-index: 5;
+        }
+    
+        @keyframes heave {
+            0%, 100% { transform: scale(0.9); opacity: 0.7; }
+            50% { transform: scale(0.95); opacity: 0.9; }
+        }
+        .exhausted-state {
+            animation: heave 1.5s ease-in-out infinite;
+            background-color: #7a94cc !important; /* Desaturated primary blue */
+            box-shadow: none !important;
+            border: 2px solid rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body min-h-screen overflow-hidden selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopNavBar -->
+<nav class="flex justify-between items-center px-8 py-6 w-full max-w-full fixed top-0 left-0 z-50 bg-transparent font-['Spline_Sans'] tracking-tight text-on-background">
+<div class="text-2xl font-black italic text-blue-700 dark:text-blue-300">Kinetic Play</div>
+<div class="hidden md:flex gap-8 items-center">
+<a class="text-blue-700 dark:text-blue-300 font-bold border-b-2 border-blue-600 hover:scale-105 transition-transform" href="#">Play</a>
+<a class="text-slate-500 dark:text-slate-400 hover:scale-105 hover:text-blue-800 transition-transform" href="#">Leaderboard</a>
+<a class="text-slate-500 dark:text-slate-400 hover:scale-105 hover:text-blue-800 transition-transform" href="#">About</a>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 rounded-full hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant">settings</span>
+</button>
+<button class="p-2 rounded-full hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant">help</span>
+</button>
+<div class="w-10 h-10 rounded-full bg-primary-container overflow-hidden">
+<img alt="User Profile" data-alt="Cartoon avatar of a smiling young person" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDNMl0ihYm6i17IR1hiSU4gPOBddewJTUfR_O-Nd4shDWVIAN8rB-8wh5sPrNECVjbTwNVnTd_NYzfk7LEa2SoonAu6iOLkQkZ-2sfdQkb6zs0JSHlHdi2_03FD-YzbHMzuXLw6RbgUzq-8swz2ZTccF1mbghiEzSuLlDL-tcgKsDaYi7EuRhoq08MboCH3SWlGRXvZ4TAUPnW8GlIruK_u55RMNqo7aIGyr-_kXNiNdp7hTcWl4wIS1eRW_ZGuAZ64M9V4bUcgjjJc"/>
+</div>
+</div>
+</nav>
+<!-- SideNavBar (Mobile/Alternative Context) -->
+<aside class="fixed left-0 top-0 h-full w-64 z-40 flex flex-col p-6 rounded-r-[3rem] bg-slate-50/60 dark:bg-slate-900/60 backdrop-blur-xl shadow-2xl shadow-blue-900/10 -translate-x-full lg:translate-x-0 transition-transform duration-500 font-['Be_Vietnam_Pro'] font-medium">
+<div class="flex items-center gap-3 mb-12 px-2">
+<div class="w-10 h-10 kinetic-gradient rounded-xl flex items-center justify-center text-white">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">videogame_asset</span>
+</div>
+<div>
+<h2 class="font-['Spline_Sans'] text-xl font-bold text-blue-600 leading-tight">Playground</h2>
+<p class="text-xs text-slate-500">Vibe Check</p>
+</div>
+</div>
+<div class="space-y-4 flex-grow">
+<div class="flex items-center gap-4 px-4 py-3 bg-blue-600 text-white rounded-full scale-105 shadow-lg">
+<span class="material-symbols-outlined">videogame_asset</span>
+<span>Play</span>
+</div>
+<div class="flex items-center gap-4 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 rounded-full transition-all">
+<span class="material-symbols-outlined">emoji_events</span>
+<span>Leaderboard</span>
+</div>
+<div class="flex items-center gap-4 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 rounded-full transition-all">
+<span class="material-symbols-outlined">info</span>
+<span>About</span>
+</div>
+</div>
+<div class="mt-auto bg-surface-container-high p-4 rounded-xl border border-white/20">
+<p class="text-xs font-label uppercase tracking-widest text-on-surface-variant mb-2">Distance Target</p>
+<div class="h-2 w-full bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-primary w-0 transition-all duration-300" id="progress-bar"></div>
+</div>
+<p class="text-lg font-headline font-bold text-primary mt-2" id="distance-counter">0px / 5000px</p>
+</div>
+</aside>
+<!-- Main Playground Canvas -->
+<main class="relative h-screen w-full flex flex-col items-center justify-center p-8 lg:ml-64">
+<!-- Background Accents (Mischief Layers) -->
+<div class="absolute top-1/4 -right-20 w-96 h-96 bg-primary opacity-5 rounded-full blur-[100px] pointer-events-none"></div>
+<div class="absolute -bottom-20 -left-20 w-[500px] h-[500px] bg-secondary opacity-5 rounded-full blur-[120px] pointer-events-none"></div>
+<header class="text-center mb-12 pointer-events-none select-none">
+<h1 class="font-headline text-5xl md:text-7xl font-black text-on-background tracking-tighter mb-4 italic">
+                CATCH ME IF <span class="text-primary">YOU CAN</span>
+</h1>
+<p class="text-on-surface-variant text-lg md:text-xl max-w-md mx-auto font-body">
+                The most kinetic button in the playground. Can you keep up with its chaotic energy?
+            </p>
+</header>
+<!-- The Target Button -->
+<div class="relative w-full h-full flex items-center justify-center overflow-visible">
+<button class="group absolute kinetic-gradient text-on-primary font-headline text-2xl font-bold px-12 py-6 rounded-full shadow-2xl shadow-blue-900/30 flex items-center gap-3 active:scale-95 z-20" id="runaway-button">
+<span id="button-label">Click Me!</span>
+<span class="material-symbols-outlined" id="button-icon">bolt</span>
+</button>
+</div>
+<!-- Success Modal (Hidden by default) -->
+<div class="fixed inset-0 z-[60] flex items-center justify-center pointer-events-none opacity-0 transition-opacity duration-300 p-6" id="success-modal">
+<div class="glass-overlay absolute inset-0"></div>
+<div class="relative bg-surface-container-lowest p-10 rounded-xl shadow-2xl border-4 border-primary text-center max-w-md scale-90 transition-transform duration-500" id="modal-content">
+<span class="material-symbols-outlined text-tertiary text-6xl mb-4" style="font-variation-settings: 'FILL' 1;">stars</span>
+<h3 class="font-headline text-3xl font-black text-on-surface mb-2">You caught me!</h3>
+<p class="font-body text-on-surface-variant mb-6">Phew... you're surprisingly fast. I need a nap now.</p>
+<button class="bg-primary text-on-primary font-label font-bold px-8 py-4 rounded-full hover:scale-105 transition-all" onclick="window.location.reload()">Play Again</button>
+</div>
+</div>
+</main>
+<script>
+        const button = document.getElementById('runaway-button');
+        const label = document.getElementById('button-label');
+        const icon = document.getElementById('button-icon');
+        const counter = document.getElementById('distance-counter');
+        const progressBar = document.getElementById('progress-bar');
+        const successModal = document.getElementById('success-modal');
+        const modalContent = document.getElementById('modal-content');
+        
+        let totalDistance = 0;
+        const targetDistance = 5000;
+        let isExhausted = false;
+        let lastX = 0;
+        let lastY = 0;
+
+        function updateProgress() {
+            const percentage = Math.min((totalDistance / targetDistance) * 100, 100);
+            progressBar.style.width = percentage + '%';
+            counter.innerText = `${Math.floor(totalDistance)}px / ${targetDistance}px`;
+
+            if (totalDistance >= targetDistance && !isExhausted) {
+                becomeExhausted();
+            }
+        }
+
+        function createWhoosh(x, y, targetX, targetY) {
+            const trail = document.createElement('div');
+            trail.className = 'whoosh-trail';
+            
+            const dist = Math.sqrt(Math.pow(targetX - x, 2) + Math.pow(targetY - y, 2));
+            const angle = Math.atan2(targetY - y, targetX - x) * 180 / Math.PI;
+
+            trail.style.width = dist + 'px';
+            trail.style.height = '40px';
+            trail.style.left = x + 'px';
+            trail.style.top = y + 'px';
+            trail.style.transformOrigin = '0 50%';
+            trail.style.transform = `rotate(${angle}deg)`;
+            
+            document.body.appendChild(trail);
+            
+            setTimeout(() => {
+                trail.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+                trail.style.opacity = '0';
+                trail.style.transform = `rotate(${angle}deg) scaleY(0)`;
+                setTimeout(() => trail.remove(), 400);
+            }, 50);
+        }
+
+        button.addEventListener('mouseover', (e) => {
+            if (isExhausted) return;
+
+            const rect = button.getBoundingClientRect();
+            const currentX = rect.left + rect.width / 2;
+            const currentY = rect.top + rect.height / 2;
+
+            const padding = 100;
+            const newX = Math.random() * (window.innerWidth - rect.width - padding) + padding/2;
+            const newY = Math.random() * (window.innerHeight - rect.height - padding) + padding/2;
+
+            const moveDist = Math.sqrt(Math.pow(newX - currentX, 2) + Math.pow(newY - currentY, 2));
+            totalDistance += moveDist;
+
+            button.style.transform = `translate(${newX - currentX}px, ${newY - currentY}px)`;
+            
+            createWhoosh(currentX, currentY, newX, newY);
+            updateProgress();
+        });
+
+        function becomeExhausted() {
+            isExhausted = true;
+            button.style.transform = `translate(0px, 0px)`; 
+            button.classList.remove('kinetic-gradient');
+            button.classList.add('exhausted-state', 'text-on-primary');
+            
+            label.innerText = "Okay, I'm tired...";
+            icon.innerText = "airware"; // Better icon for panting/air
+            
+            button.addEventListener('click', () => {
+                successModal.classList.remove('pointer-events-none', 'opacity-0');
+                modalContent.classList.remove('scale-90');
+                modalContent.classList.add('scale-100');
+            });
+        }
+
+        const initialRect = button.getBoundingClientRect();
+        lastX = initialRect.left;
+        lastY = initialRect.top;
+    </script>
+</body></html>
