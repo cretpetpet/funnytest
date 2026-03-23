@@ -4,186 +4,77 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Kinetic Play | Catch the Button</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries">
-        const button = document.getElementById('runaway-button');
-        const label = document.getElementById('button-label');
-        const icon = document.getElementById('button-icon');
-        const counter = document.getElementById('distance-counter');
-        const progressBar = document.getElementById('progress-bar');
-        const successModal = document.getElementById('success-modal');
-        const modalContent = document.getElementById('modal-content');
-        
-        let totalDistance = 0;
-        const targetDistance = 5000;
-        let isExhausted = false;
-        let lastX = 0;
-        let lastY = 0;
-
-        function updateProgress() {
-            const percentage = Math.min((totalDistance / targetDistance) * 100, 100);
-            progressBar.style.width = percentage + '%';
-            counter.innerText = `${Math.floor(totalDistance)}px / ${targetDistance}px`;
-
-            if (totalDistance >= targetDistance && !isExhausted) {
-                becomeExhausted();
-            }
-        }
-
-        function createWhoosh(x, y, targetX, targetY) {
-            const trail = document.createElement('div');
-            trail.className = 'whoosh-trail';
-            
-            const dist = Math.sqrt(Math.pow(targetX - x, 2) + Math.pow(targetY - y, 2));
-            const angle = Math.atan2(targetY - y, targetX - x) * 180 / Math.PI;
-
-            trail.style.width = dist + 'px';
-            trail.style.height = '40px';
-            trail.style.left = x + 'px';
-            trail.style.top = y + 'px';
-            trail.style.transformOrigin = '0 50%';
-            trail.style.transform = `rotate(${angle}deg)`;
-            
-            document.body.appendChild(trail);
-            
-            setTimeout(() => {
-                trail.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
-                trail.style.opacity = '0';
-                trail.style.transform = `rotate(${angle}deg) scaleY(0)`;
-                setTimeout(() => trail.remove(), 400);
-            }, 50);
-        }
-
-        button.addEventListener('mouseover', (e) => {
-            if (isExhausted) return;
-
-            const rect = button.getBoundingClientRect();
-            const currentX = rect.left + rect.width / 2;
-            const currentY = rect.top + rect.height / 2;
-
-            const padding = 100;
-            const newX = Math.random() * (window.innerWidth - rect.width - padding) + padding/2;
-            const newY = Math.random() * (window.innerHeight - rect.height - padding) + padding/2;
-
-            const moveDist = Math.sqrt(Math.pow(newX - currentX, 2) + Math.pow(newY - currentY, 2));
-            totalDistance += moveDist;
-
-            button.style.transform = `translate(${newX - currentX}px, ${newY - currentY}px)`;
-            
-            createWhoosh(currentX, currentY, newX, newY);
-            updateProgress();
-        });
-
-        function becomeExhausted() {
-            isExhausted = true;
-            button.style.transform = `translate(0px, 0px)`; 
-            button.classList.remove('kinetic-gradient');
-            button.classList.add('exhausted-state', 'text-on-primary');
-            
-            label.innerText = "Okay, I'm tired...";
-            icon.innerText = "airware"; // Better icon for panting/air
-            
-            button.addEventListener('click', () => {
-                successModal.classList.remove('pointer-events-none', 'opacity-0');
-                modalContent.classList.remove('scale-90');
-                modalContent.classList.add('scale-100');
-            });
-        }
-
-        const initialRect = button.getBoundingClientRect();
-        lastX = initialRect.left;
-        lastY = initialRect.top;
-    </script>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@300;400;500;700;800;900&amp;family=Be+Vietnam+Pro:wght@300;400;500;600;700&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <script id="tailwind-config">
-        const button = document.getElementById('runaway-button');
-        const label = document.getElementById('button-label');
-        const icon = document.getElementById('button-icon');
-        const counter = document.getElementById('distance-counter');
-        const progressBar = document.getElementById('progress-bar');
-        const successModal = document.getElementById('success-modal');
-        const modalContent = document.getElementById('modal-content');
-        
-        let totalDistance = 0;
-        const targetDistance = 5000;
-        let isExhausted = false;
-        let lastX = 0;
-        let lastY = 0;
-
-        function updateProgress() {
-            const percentage = Math.min((totalDistance / targetDistance) * 100, 100);
-            progressBar.style.width = percentage + '%';
-            counter.innerText = `${Math.floor(totalDistance)}px / ${targetDistance}px`;
-
-            if (totalDistance >= targetDistance && !isExhausted) {
-                becomeExhausted();
-            }
-        }
-
-        function createWhoosh(x, y, targetX, targetY) {
-            const trail = document.createElement('div');
-            trail.className = 'whoosh-trail';
-            
-            const dist = Math.sqrt(Math.pow(targetX - x, 2) + Math.pow(targetY - y, 2));
-            const angle = Math.atan2(targetY - y, targetX - x) * 180 / Math.PI;
-
-            trail.style.width = dist + 'px';
-            trail.style.height = '40px';
-            trail.style.left = x + 'px';
-            trail.style.top = y + 'px';
-            trail.style.transformOrigin = '0 50%';
-            trail.style.transform = `rotate(${angle}deg)`;
-            
-            document.body.appendChild(trail);
-            
-            setTimeout(() => {
-                trail.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
-                trail.style.opacity = '0';
-                trail.style.transform = `rotate(${angle}deg) scaleY(0)`;
-                setTimeout(() => trail.remove(), 400);
-            }, 50);
-        }
-
-        button.addEventListener('mouseover', (e) => {
-            if (isExhausted) return;
-
-            const rect = button.getBoundingClientRect();
-            const currentX = rect.left + rect.width / 2;
-            const currentY = rect.top + rect.height / 2;
-
-            const padding = 100;
-            const newX = Math.random() * (window.innerWidth - rect.width - padding) + padding/2;
-            const newY = Math.random() * (window.innerHeight - rect.height - padding) + padding/2;
-
-            const moveDist = Math.sqrt(Math.pow(newX - currentX, 2) + Math.pow(newY - currentY, 2));
-            totalDistance += moveDist;
-
-            button.style.transform = `translate(${newX - currentX}px, ${newY - currentY}px)`;
-            
-            createWhoosh(currentX, currentY, newX, newY);
-            updateProgress();
-        });
-
-        function becomeExhausted() {
-            isExhausted = true;
-            button.style.transform = `translate(0px, 0px)`; 
-            button.classList.remove('kinetic-gradient');
-            button.classList.add('exhausted-state', 'text-on-primary');
-            
-            label.innerText = "Okay, I'm tired...";
-            icon.innerText = "airware"; // Better icon for panting/air
-            
-            button.addEventListener('click', () => {
-                successModal.classList.remove('pointer-events-none', 'opacity-0');
-                modalContent.classList.remove('scale-90');
-                modalContent.classList.add('scale-100');
-            });
-        }
-
-        const initialRect = button.getBoundingClientRect();
-        lastX = initialRect.left;
-        lastY = initialRect.top;
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "tertiary-dim": "#5f4e00",
+              "surface-container-low": "#f2efff",
+              "on-error": "#ffefef",
+              "outline": "#74739e",
+              "primary-container": "#859aff",
+              "background": "#f9f5ff",
+              "outline-variant": "#aba9d7",
+              "on-secondary-fixed": "#601e00",
+              "secondary-container": "#ffc5af",
+              "on-primary": "#f2f1ff",
+              "on-tertiary-fixed": "#433700",
+              "on-tertiary-fixed-variant": "#645300",
+              "on-primary-container": "#001867",
+              "inverse-on-surface": "#9a99c6",
+              "inverse-surface": "#0a082f",
+              "tertiary-fixed-dim": "#edc600",
+              "surface-container-lowest": "#ffffff",
+              "primary-fixed": "#859aff",
+              "on-primary-fixed": "#000000",
+              "on-secondary-container": "#802b00",
+              "error-container": "#f74b6d",
+              "inverse-primary": "#6d88ff",
+              "secondary": "#a23900",
+              "on-secondary": "#ffefeb",
+              "surface-tint": "#0846ed",
+              "surface-container-highest": "#dcd9ff",
+              "surface-variant": "#dcd9ff",
+              "error": "#b41340",
+              "surface-container": "#e9e5ff",
+              "on-tertiary": "#fff2ce",
+              "on-primary-fixed-variant": "#00207e",
+              "primary": "#0846ed",
+              "on-secondary-fixed-variant": "#903100",
+              "on-surface": "#2b2a51",
+              "tertiary-fixed": "#fdd400",
+              "on-tertiary-container": "#594a00",
+              "tertiary": "#6d5a00",
+              "primary-fixed-dim": "#718bff",
+              "tertiary-container": "#fdd400",
+              "secondary-fixed": "#ffc5af",
+              "secondary-fixed-dim": "#ffb193",
+              "on-background": "#2b2a51",
+              "surface-dim": "#d2d0ff",
+              "surface": "#f9f5ff",
+              "error-dim": "#a70138",
+              "primary-dim": "#003cd3",
+              "surface-bright": "#f9f5ff",
+              "secondary-dim": "#8e3100",
+              "surface-container-high": "#e2dfff",
+              "on-error-container": "#510017",
+              "on-surface-variant": "#585781"
+            },
+            fontFamily: {
+              "headline": ["Spline Sans"],
+              "body": ["Be Vietnam Pro"],
+              "label": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+          },
+        },
+      }
     </script>
 <style>
         .material-symbols-outlined {
@@ -205,17 +96,6 @@
             background: rgba(133, 154, 255, 0.3);
             border-radius: 9999px;
             z-index: 5;
-        }
-    
-        @keyframes heave {
-            0%, 100% { transform: scale(0.9); opacity: 0.7; }
-            50% { transform: scale(0.95); opacity: 0.9; }
-        }
-        .exhausted-state {
-            animation: heave 1.5s ease-in-out infinite;
-            background-color: #7a94cc !important; /* Desaturated primary blue */
-            box-shadow: none !important;
-            border: 2px solid rgba(0,0,0,0.1);
         }
     </style>
 </head>
@@ -270,7 +150,7 @@
 <div class="h-2 w-full bg-surface-container rounded-full overflow-hidden">
 <div class="h-full bg-primary w-0 transition-all duration-300" id="progress-bar"></div>
 </div>
-<p class="text-lg font-headline font-bold text-primary mt-2" id="distance-counter">0px / 5000px</p>
+<p class="text-lg font-headline font-bold text-primary mt-2" id="distance-counter">0px / 1000px</p>
 </div>
 </aside>
 <!-- Main Playground Canvas -->
@@ -314,7 +194,7 @@
         const modalContent = document.getElementById('modal-content');
         
         let totalDistance = 0;
-        const targetDistance = 5000;
+        const targetDistance = 1000;
         let isExhausted = false;
         let lastX = 0;
         let lastY = 0;
@@ -360,28 +240,34 @@
             const currentX = rect.left + rect.width / 2;
             const currentY = rect.top + rect.height / 2;
 
+            // Simple "run away" logic within viewport
             const padding = 100;
             const newX = Math.random() * (window.innerWidth - rect.width - padding) + padding/2;
             const newY = Math.random() * (window.innerHeight - rect.height - padding) + padding/2;
 
+            // Calculate distance moved
             const moveDist = Math.sqrt(Math.pow(newX - currentX, 2) + Math.pow(newY - currentY, 2));
             totalDistance += moveDist;
 
+            // Move the button
             button.style.transform = `translate(${newX - currentX}px, ${newY - currentY}px)`;
             
+            // Visual feedback
             createWhoosh(currentX, currentY, newX, newY);
             updateProgress();
         });
 
         function becomeExhausted() {
             isExhausted = true;
-            button.style.transform = `translate(0px, 0px)`; 
+            button.style.transform = `translate(0px, 0px)`; // Return to center (relative)
             button.classList.remove('kinetic-gradient');
-            button.classList.add('exhausted-state', 'text-on-primary');
+            button.classList.add('bg-surface-container-highest', 'text-on-surface-variant', 'opacity-60', 'scale-90');
+            button.style.boxShadow = 'none';
             
             label.innerText = "Okay, I'm tired...";
-            icon.innerText = "airware"; // Better icon for panting/air
+            icon.innerText = "sweat"; // Material symbol for sweat/water drops
             
+            // Add click listener now that it's catchable
             button.addEventListener('click', () => {
                 successModal.classList.remove('pointer-events-none', 'opacity-0');
                 modalContent.classList.remove('scale-90');
@@ -389,6 +275,7 @@
             });
         }
 
+        // Initialize position
         const initialRect = button.getBoundingClientRect();
         lastX = initialRect.left;
         lastY = initialRect.top;
