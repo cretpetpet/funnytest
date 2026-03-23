@@ -168,7 +168,7 @@
 </header>
 <!-- The Target Button -->
 <div class="relative w-full h-full flex items-center justify-center overflow-visible">
-<button class="group absolute kinetic-gradient text-on-primary font-headline text-2xl font-bold px-12 py-6 rounded-full shadow-2xl shadow-blue-900/30 flex items-center gap-3 active:scale-95 z-20" id="runaway-button">
+<button class="group kinetic-gradient text-on-primary font-headline text-2xl font-bold px-12 py-6 rounded-full shadow-2xl shadow-blue-900/30 flex items-center gap-3 active:scale-95 z-20" id="runaway-button">
 <span id="button-label">Click Me!</span>
 <span class="material-symbols-outlined" id="button-icon">bolt</span>
 </button>
@@ -198,6 +198,7 @@
         let isExhausted = false;
         let lastX = 0;
         let lastY = 0;
+		let isMoving = false;
 
         function updateProgress() {
             const percentage = Math.min((totalDistance / targetDistance) * 100, 100);
@@ -232,34 +233,48 @@
                 setTimeout(() => trail.remove(), 400);
             }, 50);
         }
+let posX = window.innerWidth / 2;
+let posY = window.innerHeight / 2;
 
-        button.addEventListener('mouseover', (e) => {
-            if (isExhausted) return;
+button.style.position = "fixed";
+button.style.left = "0px";
+button.style.top = "0px";
 
-            const rect = button.getBoundingClientRect();
-            const currentX = rect.left + rect.width / 2;
-            const currentY = rect.top + rect.height / 2;
+// put button in center initially
+button.style.transform = `translate(${posX}px, ${posY}px)`;
 
-            // Simple "run away" logic within viewport
-            const padding = 100;
-            const newX = Math.random() * (window.innerWidth - rect.width - padding) + padding/2;
-            const newY = Math.random() * (window.innerHeight - rect.height - padding) + padding/2;
+button.addEventListener('mouseenter', () => {
+    if (isExhausted) return;
 
-            // Calculate distance moved
-            const moveDist = Math.sqrt(Math.pow(newX - currentX, 2) + Math.pow(newY - currentY, 2));
-            totalDistance += moveDist;
+    const rect = button.getBoundingClientRect();
+    const padding = 100;
 
-            // Move the button
-            button.style.transform = `translate(${newX - currentX}px, ${newY - currentY}px)`;
-            
-            // Visual feedback
-            createWhoosh(currentX, currentY, newX, newY);
-            updateProgress();
-        });
+    const maxX = window.innerWidth - rect.width - padding;
+    const maxY = window.innerHeight - rect.height - padding;
+
+    const newX = Math.random() * maxX + padding / 2;
+    const newY = Math.random() * maxY + padding / 2;
+
+    const moveDist = Math.sqrt(
+        Math.pow(newX - posX, 2) + Math.pow(newY - posY, 2)
+    );
+    totalDistance += moveDist;
+
+    posX = newX;
+    posY = newY;
+
+    button.style.transform = `translate(${posX}px, ${posY}px)`;
+
+    createWhoosh(rect.left + rect.width/2, rect.top + rect.height/2, newX, newY);
+    updateProgress();
+});
 
         function becomeExhausted() {
             isExhausted = true;
-            button.style.transform = `translate(0px, 0px)`; // Return to center (relative)
+            posX = window.innerWidth / 2;
+posY = window.innerHeight / 2;
+
+button.style.transform = `translate(${posX}px, ${posY}px)`;
             button.classList.remove('kinetic-gradient');
             button.classList.add('bg-surface-container-highest', 'text-on-surface-variant', 'opacity-60', 'scale-90');
             button.style.boxShadow = 'none';
@@ -276,8 +291,5 @@
         }
 
         // Initialize position
-        const initialRect = button.getBoundingClientRect();
-        lastX = initialRect.left;
-        lastY = initialRect.top;
     </script>
 </body></html>
